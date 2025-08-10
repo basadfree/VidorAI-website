@@ -15,16 +15,19 @@
     </header>
 
     <section class="form-section visible">
-        <form class="access-form">
-            <input type="text" placeholder="שם מלא" required>
-            <input type="email" placeholder="אימייל" required>
+        <form id="accessForm" class="access-form">
+            <input type="text" id="fullName" placeholder="שם מלא" required>
+            <input type="email" id="email" placeholder="אימייל" required>
             <button type="submit" class="submit-button">שלח בקשה</button>
         </form>
+        <div id="statusMessage"></div>
     </section>
 
     <footer>
         <p>© 2025 VidorAI. נוצר עם ❤️ בישראל. כל הזכויות שמורות.</p>
     </footer>
+
+    <script src="script.js"></script>
 
 </body>
 </html>
