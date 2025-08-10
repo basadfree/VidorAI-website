@@ -21,10 +21,22 @@ document.addEventListener('DOMContentLoaded', () => {
                 observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
 
     const sections = document.querySelectorAll('section');
-    sections.forEach(section => observer.observe(section));
+
+    // בדיקה ראשונית — אם הסקשן כבר בתצוגה, הוסף לו visible מיד
+    sections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (
+            rect.top < window.innerHeight &&
+            rect.bottom > 0
+        ) {
+            section.classList.add('visible');
+        } else {
+            observer.observe(section);
+        }
+    });
 
     // פונקציונליות לשאלות נפוצות (FAQ)
     const faqItems = document.querySelectorAll('.faq-item');
