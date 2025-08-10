@@ -97,3 +97,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// פונקציונליות חדשה לשליחת טופס ההתחברות
+const loginForm = document.getElementById('loginForm');
+if (loginForm) {
+    loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const password = document.getElementById('password').value;
+        const statusMessage = document.getElementById('statusMessage');
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ password }),
+            });
+
+            const result = await response.json();
+            
+            if (response.ok) {
+                // התחברות מוצלחת
+                statusMessage.textContent = result.message;
+                statusMessage.style.color = '#155724';
+                statusMessage.style.backgroundColor = '#d4edda';
+                statusMessage.style.padding = '10px';
+                // ננתב את המשתמש לפאנל המשתמש
+                window.location.href = 'dashboard.html';
+            } else {
+                // סיסמה שגויה
+                statusMessage.textContent = result.message || 'שגיאה: סיסמה לא נכונה.';
+                statusMessage.style.color = '#721c24';
+                statusMessage.style.backgroundColor = '#f8d7da';
+                statusMessage.style.padding = '10px';
+            }
+
+        } catch (error) {
+            console.error('Error during login:', error);
+            statusMessage.textContent = 'שגיאה בחיבור לשרת. בדקו את החיבור לרשת.';
+            statusMessage.style.color = '#721c24';
+            statusMessage.style.backgroundColor = '#f8d7da';
+            statusMessage.style.padding = '10px';
+        }
+    });
+}
