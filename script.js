@@ -153,16 +153,19 @@ if (currentPath.includes('dashboard.html')) {
     async function checkAuthentication() {
         try {
             // קריאה ל-API לבדיקת אימות
-            const response = await fetch('/api/check-auth');
+            const response = await fetch('/api/check-auth', {
+                method: 'GET',
+                credentials: 'omit', // שינוי זה מוודא שהדפדפן שולח את העוגיות
+            });
             
-            if (!response.ok) {
-                // אם התשובה לא תקינה, נתב לדף ההתחברות
+            if (response.status === 401) {
+                // אם התשובה היא "לא מורשה", נתב לדף ההתחברות
                 window.location.href = 'login.html';
             }
             // אם התשובה תקינה (response.ok), אפשר להמשיך לדף
         } catch (error) {
             console.error('שגיאה בבדיקת אימות:', error);
-            // במקרה של שגיאה, נתב לדף ההתחברות כדי למנוע גישה לא מאושרת
+            // במקרה של שגיאה, נתב לדף ההתחברות
             window.location.href = 'login.html';
         }
     }
