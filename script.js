@@ -182,3 +182,68 @@ if (logoutButton) {
         window.location.href = 'login.html';
     });
 }
+
+// פונקציונליות ליצירת סרטון
+const createVideoForm = document.getElementById('createVideoForm');
+if (createVideoForm) {
+    createVideoForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const videoText = document.getElementById('videoText').value;
+        const videoImage = document.getElementById('videoImage').files[0];
+        const videoDescription = document.getElementById('videoDescription').value;
+        const musicSelect = document.getElementById('musicSelect').value;
+        const designSelect = document.getElementById('designSelect').value;
+
+        const statusMessage = document.getElementById('videoStatusMessage');
+        const videosList = document.getElementById('videosList');
+
+        statusMessage.textContent = 'יוצר סרטון... זה עשוי לקחת מספר דקות.';
+        statusMessage.style.color = '#31708f';
+        statusMessage.style.backgroundColor = '#d9edf7';
+        statusMessage.style.padding = '10px';
+
+        // שימוש ב-FormData כדי לשלוח טקסט וגם קובץ תמונה
+        const formData = new FormData();
+        formData.append('videoText', videoText);
+        if (videoImage) {
+            formData.append('videoImage', videoImage);
+        }
+        formData.append('videoDescription', videoDescription);
+        formData.append('musicSelect', musicSelect);
+        formData.append('designSelect', designSelect);
+
+        try {
+            const response = await fetch('/api/create-video', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                statusMessage.textContent = 'הסרטון נוצר בהצלחה!';
+                statusMessage.style.color = '#155724';
+                statusMessage.style.backgroundColor = '#d4edda';
+
+                const newVideoElement = document.createElement('div');
+                newVideoElement.innerHTML = `
+                    <h3>${result.videoDescription}</h3>
+                    <p>קובץ הסרטון: <a href="${result.videoUrl}" target="_blank">לחץ לצפייה</a></p>
+                `;
+                videosList.appendChild(newVideoElement);
+
+            } else {
+                statusMessage.textContent = result.message || 'שגיאה ביצירת הסרטון.';
+                statusMessage.style.color = '#721c24';
+                statusMessage.style.backgroundColor = '#f8d7da';
+            }
+
+        } catch (error) {
+            console.error('שגיאה ביצירת הסרטון:', error);
+            statusMessage.textContent = 'שגיאה בחיבור לשרת. נסו שוב מאוחר יותר.';
+            statusMessage.style.color = '#721c24';
+            statusMessage.style.backgroundColor = '#f8d7da';
+        }
+    });
+}
