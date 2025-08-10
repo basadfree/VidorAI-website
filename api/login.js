@@ -9,7 +9,6 @@ module.exports = async (request, response) => {
                 return response.status(400).json({ message: 'אימייל וסיסמה נדרשים.' });
             }
 
-            // חפש את המשתמש בבסיס הנתונים
             const { rows } = await sql`
                 SELECT * FROM users WHERE email = ${email} AND password = ${password};
             `;
@@ -19,7 +18,6 @@ module.exports = async (request, response) => {
                 const lastLoginDate = new Date(user.last_login_date);
                 const currentDate = new Date();
 
-                // בדוק אם עבר יום או חודש מאז הכניסה האחרונה
                 const isNewDay = currentDate.getDate() !== lastLoginDate.getDate() || currentDate.getMonth() !== lastLoginDate.getMonth() || currentDate.getFullYear() !== lastLoginDate.getFullYear();
                 const isNewMonth = currentDate.getMonth() !== lastLoginDate.getMonth() || currentDate.getFullYear() !== lastLoginDate.getFullYear();
 
@@ -35,15 +33,15 @@ module.exports = async (request, response) => {
                     updateQuery += 'videos_created_this_month = 0';
                 }
                 
-                // עדכן את בסיס הנתונים אם יש צורך
                 if (updateQuery.length > 0) {
                     await sql`
                         UPDATE users SET ${sql.raw(updateQuery)} WHERE email = ${email};
                     `;
                 }
 
-                // הגדרת עוגייה
-                response.setHeader('Set-Cookie', 'auth=true; Path=/; Max-Age=3600; HttpOnly');
+                // הגדרת עוגייה עם המייל המקודד
+                const encodedEmail = btoa(email);
+                response.setHeader('Set-Cookie', `auth=${encodedEmail}; Path=/; Max-Age=3600; HttpOnly`);
                 return response.status(200).json({ message: 'התחברת בהצלחה!' });
             } else {
                 return response.status(401).json({ message: 'אימייל או סיסמה שגויים.' });
