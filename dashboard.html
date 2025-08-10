@@ -10,17 +10,40 @@
 <body>
 
     <header class="page-header">
-        <h1>ברוך הבא לפאנל המשתמש!</h1>
-        <p>כאן תוכל ליצור תוכן וידאו מבוסס AI.</p>
+        <h1>פאנל המשתמש</h1>
+        <p>כאן תוכלו ליצור ולנהל את הסרטונים שלכם.</p>
+        <button id="logoutButton" class="submit-button" style="position: absolute; left: 20px; top: 20px;">התנתק</button>
     </header>
 
-    <section class="form-section visible">
-        <div class="access-form">
-            <h2>התחברת בהצלחה</h2>
-            <p>בקרוב יתווספו כאן כלים ליצירת סרטוני AI מדהימים.</p>
-            <button id="logoutButton" class="submit-button">התנתק</button>
+    <main class="dashboard-content">
+        <h2>יצירת סרטון חדש</h2>
+        <form id="createVideoForm" class="access-form">
+            <textarea id="videoText" placeholder="כתוב כאן את הטקסט לסרטון..." required></textarea>
+            <input type="file" id="videoImage" accept="image/*">
+            <input type="text" id="videoDescription" placeholder="תיאור קצר לסרטון" required>
+            
+            <label for="musicSelect">בחר מוזיקה:</label>
+            <select id="musicSelect">
+                <option value="none">ללא מוזיקה</option>
+                <option value="upbeat">קצבי</option>
+                <option value="calm">רגוע</option>
+            </select>
+
+            <label for="designSelect">בחר עיצוב:</label>
+            <select id="designSelect">
+                <option value="simple">פשוט</option>
+                <option value="professional">מקצועי</option>
+            </select>
+            
+            <button type="submit" class="submit-button">צור סרטון</button>
+        </form>
+        <div id="videoStatusMessage"></div>
+        
+        <h2>הסרטונים שנוצרו</h2>
+        <div id="videosList">
+            <p>אין סרטונים עדיין.</p>
         </div>
-    </section>
+    </main>
 
     <footer>
         <p>© 2025 VidorAI. נוצר עם ❤️ בישראל. כל הזכויות שמורות.</p>
