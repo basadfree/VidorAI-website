@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/basadfree/VidorAI-website#readme",
   "dependencies": {
-    "@vercel/postgres": "^0.10.0"
+    "@vercel/postgres": "^0.10.0",
+    "formidable": "^3.5.4"
   }
 }
