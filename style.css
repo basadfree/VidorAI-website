@@ -27,6 +27,19 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
+/* כפתור נגישות */
+.accessibility-button {
+    color: white;
+    text-decoration: none;
+    background-color: #4b4b4b;
+    padding: 8px 12px;
+    border-radius: 5px;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 1001;
+}
+
 /* כותרות - עיצוב מדהים ודרמטי */
 h1, h2 {
     color: #1e1e1e;
@@ -234,49 +247,6 @@ section.visible {
     border-right: 3px solid #5b21b6;
 }
 
-/* טופס בקשת הרשאה */
-.request-access-section {
-    background-color: #e2e8f0;
-    text-align: center;
-}
-
-.access-form {
-    max-width: 500px;
-    margin: 20px auto;
-}
-
-.access-form input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-}
-
-.submit-button {
-    width: 100%;
-    padding: 15px;
-    background-color: #5cb85c;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.submit-button:hover {
-    background-color: #4cae4c;
-}
-
-/* פוטר */
-footer {
-    text-align: center;
-    padding: 30px;
-    background-color: #1e1e1e;
-    color: white;
-}
-
 /* עיצוב עמוד בקשת הגישה */
 .page-header {
     text-align: center;
@@ -288,4 +258,38 @@ footer {
     padding: 50px 5%;
     background-color: white;
     text-align: center;
+}
+.access-form {
+    max-width: 500px;
+    margin: 20px auto;
+}
+.access-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.submit-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.submit-button:hover {
+    background-color: #4cae4c;
+}
+
+
+/* פוטר */
+footer {
+    text-align: center;
+    padding: 30px;
+    background-color: #1e1e1e;
+    color: white;
 }
