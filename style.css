@@ -276,3 +276,16 @@ footer {
     background-color: #1e1e1e;
     color: white;
 }
+
+/* עיצוב עמוד בקשת הגישה */
+.page-header {
+    text-align: center;
+    padding: 100px 5%;
+    background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+}
+
+.form-section {
+    padding: 50px 5%;
+    background-color: white;
+    text-align: center;
+}
