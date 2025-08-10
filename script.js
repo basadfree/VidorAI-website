@@ -247,3 +247,49 @@ if (createVideoForm) {
         }
     });
 }
+
+// פונקציה לשליפת והצגת היסטוריית הסרטונים
+async function fetchVideos() {
+    const videosList = document.getElementById('videosList');
+    if (!videosList) return;
+    
+    videosList.innerHTML = '<p>טוען היסטוריית סרטונים...</p>';
+
+    try {
+        const response = await fetch('/api/get-videos', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            videosList.innerHTML = ''; // מנקה את ההודעה "טוען"
+            if (result.videos.length > 0) {
+                result.videos.forEach(video => {
+                    const newVideoElement = document.createElement('div');
+                    newVideoElement.classList.add('video-item');
+                    newVideoElement.innerHTML = `
+                        <h3>${video.video_description}</h3>
+                        <p>נוצר בתאריך: ${new Date(video.created_at).toLocaleDateString()}</p>
+                        <a href="${video.video_url}" target="_blank" class="video-link">צפה בסרטון</a>
+                    `;
+                    videosList.appendChild(newVideoElement);
+                });
+            } else {
+                videosList.innerHTML = '<p>אין סרטונים עדיין.</p>';
+            }
+        } else {
+            videosList.innerHTML = `<p style="color:red;">שגיאה בטעינת הסרטונים: ${result.message}</p>`;
+        }
+
+    } catch (error) {
+        console.error('שגיאה בטעינת הסרטונים:', error);
+        videosList.innerHTML = '<p style="color:red;">שגיאה בחיבור לשרת. נסו שוב מאוחר יותר.</p>';
+    }
+}
+
+// קורא לפונקציה בעת טעינת הדף כדי להציג את ההיסטוריה
+document.addEventListener('DOMContentLoaded', fetchVideos);
