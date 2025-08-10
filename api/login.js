@@ -9,6 +9,7 @@ module.exports = async (request, response) => {
                 return response.status(400).json({ message: 'אימייל וסיסמה נדרשים.' });
             }
 
+            // חפש את המשתמש בבסיס הנתונים
             const { rows } = await sql`
                 SELECT * FROM users WHERE email = ${email} AND password = ${password};
             `;
@@ -18,26 +19,23 @@ module.exports = async (request, response) => {
                 const lastLoginDate = new Date(user.last_login_date);
                 const currentDate = new Date();
 
+                // בדוק אם עבר יום או חודש מאז הכניסה האחרונה
                 const isNewDay = currentDate.getDate() !== lastLoginDate.getDate() || currentDate.getMonth() !== lastLoginDate.getMonth() || currentDate.getFullYear() !== lastLoginDate.getFullYear();
                 const isNewMonth = currentDate.getMonth() !== lastLoginDate.getMonth() || currentDate.getFullYear() !== lastLoginDate.getFullYear();
 
-                let updateQuery = '';
-                const queryParams = [];
-
-                if (isNewDay) {
-                    updateQuery += 'videos_created_today = 0, last_login_date = CURRENT_DATE';
-                }
-
-                if (isNewMonth) {
-                    if (updateQuery.length > 0) updateQuery += ', ';
-                    updateQuery += 'videos_created_this_month = 0';
-                }
-                
-                if (updateQuery.length > 0) {
+                // בצע את העדכון רק אם יש צורך
+                if (isNewDay && isNewMonth) {
+                     // אם עבר גם יום וגם חודש - אפס את שני המונים
                     await sql`
-                        UPDATE users SET ${sql.raw(updateQuery)} WHERE email = ${email};
+                        UPDATE users SET videos_created_today = 0, videos_created_this_month = 0, last_login_date = CURRENT_DATE WHERE email = ${email};
+                    `;
+                } else if (isNewDay) {
+                     // אם עבר רק יום - אפס את המונה היומי
+                    await sql`
+                        UPDATE users SET videos_created_today = 0, last_login_date = CURRENT_DATE WHERE email = ${email};
                     `;
                 }
+                // אם לא עבר יום, אין צורך באף עדכון
 
                 // הגדרת עוגייה עם המייל המקודד
                 const encodedEmail = btoa(email);
