@@ -5,8 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VidorAI - התחברות</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
-    <h1>עמוד התחברות</h1>
+
+    <section class="form-section visible">
+        <form id="loginForm" class="access-form">
+            <h2>התחברות</h2>
+            <input type="password" id="password" placeholder="סיסמה" required>
+            <button type="submit" class="submit-button">התחבר</button>
+        </form>
+        <div id="statusMessage"></div>
+    </section>
+
+    <script src="script.js"></script>
+    
 </body>
 </html>
