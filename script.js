@@ -154,3 +154,27 @@ if (logoutButton) {
         window.location.href = 'login.html';
     });
 }
+
+// הגנה על פאנל המשתמש
+const currentPath = window.location.pathname;
+
+if (currentPath.includes('dashboard.html')) {
+    // בצע בדיקת אימות
+    async function checkAuthentication() {
+        try {
+            // קריאה ל-API לבדיקת אימות
+            const response = await fetch('/api/check-auth');
+            
+            if (!response.ok) {
+                // אם התשובה לא תקינה, נתב לדף ההתחברות
+                window.location.href = 'login.html';
+            }
+            // אם התשובה תקינה (response.ok), אפשר להמשיך לדף
+        } catch (error) {
+            console.error('שגיאה בבדיקת אימות:', error);
+            // במקרה של שגיאה, נתב לדף ההתחברות כדי למנוע גישה לא מאושרת
+            window.location.href = 'login.html';
+        }
+    }
+    checkAuthentication();
+}
