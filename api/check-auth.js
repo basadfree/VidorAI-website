@@ -1,11 +1,11 @@
 module.exports = (request, response) => {
-    // בגרסה פשוטה זו, נניח שהתחברות מוצלחת משאירה 'cookie'
-    // או סשן. כרגע, מכיוון שאין לנו מנגנון סשנים מורכב,
-    // נחזיר תמיד תשובה חיובית, ונבצע את הבדיקה
-    // בלקוח (client) על ידי בדיקה אם המשתמש הופנה לדף ה-dashboard
-    // לאחר לוגין מוצלח.
+    const cookies = request.headers.cookie;
 
-    // עבור הדגמה זו, נחזיר סטטוס 200 (OK) תמיד.
-    // בשלב מתקדם יותר, ניתן להוסיף כאן בדיקה של סשן או טוקן.
-    response.status(200).json({ status: 'authenticated' });
+    if (cookies && cookies.includes('auth=true')) {
+        // המשתמש מחובר
+        response.status(200).json({ authenticated: true });
+    } else {
+        // המשתמש לא מחובר
+        response.status(401).json({ authenticated: false, message: 'לא מורשה' });
+    }
 };

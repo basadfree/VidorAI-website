@@ -9,17 +9,17 @@ module.exports = async (request, response) => {
                 return response.status(400).json({ message: 'אימייל וסיסמה נדרשים.' });
             }
 
-            // חפש את המשתמש בבסיס הנתונים
             const { rows } = await sql`
                 SELECT * FROM users WHERE email = ${email} AND password = ${password};
             `;
 
             if (rows.length > 0) {
-                // התחברות מוצלחת
-                response.status(200).json({ message: 'התחברת בהצלחה!' });
+                // התחברות מוצלחת - הגדרת עוגייה
+                response.setHeader('Set-Cookie', 'auth=true; Path=/; Max-Age=3600; HttpOnly');
+                return response.status(200).json({ message: 'התחברת בהצלחה!' });
             } else {
                 // פרטים שגויים
-                response.status(401).json({ message: 'אימייל או סיסמה שגויים.' });
+                return response.status(401).json({ message: 'אימייל או סיסמה שגויים.' });
             }
 
         } else {
@@ -27,6 +27,6 @@ module.exports = async (request, response) => {
         }
     } catch (error) {
         console.error('שגיאה ב-login API:', error);
-        response.status(500).json({ message: 'אירעה שגיאה בשרת.' });
+        return response.status(500).json({ message: 'אירעה שגיאה בשרת.' });
     }
 };

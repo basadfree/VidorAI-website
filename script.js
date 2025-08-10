@@ -178,3 +178,14 @@ if (currentPath.includes('dashboard.html')) {
     }
     checkAuthentication();
 }
+
+// פונקציונליות לכפתור התנתקות
+const logoutButton = document.getElementById('logoutButton');
+if (logoutButton) {
+    logoutButton.addEventListener('click', () => {
+        // מוחק את העוגייה על ידי הגדרת תאריך תפוגה בעבר
+        document.cookie = 'auth=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        // וניתוב לדף ההתחברות
+        window.location.href = 'login.html';
+    });
+}
