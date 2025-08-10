@@ -144,3 +144,13 @@ if (loginForm) {
         }
     });
 }
+
+// פונקציונליות לכפתור התנתקות
+const logoutButton = document.getElementById('logoutButton');
+if (logoutButton) {
+    logoutButton.addEventListener('click', () => {
+        // מחיקת פרטי התחברות (לצורך הדגמה, אין כרגע פרטים שמורים)
+        // וניתוב לדף ההתחברות
+        window.location.href = 'login.html';
+    });
+}
