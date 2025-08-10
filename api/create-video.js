@@ -4,9 +4,9 @@ const path = require('path');
 const fs = require('fs');
 
 // הגדרת formidable לטפל בקבצים זמניים בתיקיית /tmp
-const form = formidable({
+const form = new formidable.IncomingForm({
     multiples: false,
-    uploadDir: '/tmp', // שינוי לשימוש בתיקייה /tmp
+    uploadDir: '/tmp',
     keepExtensions: true,
 });
 
