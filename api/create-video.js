@@ -3,7 +3,6 @@ const formidable = require('formidable');
 const path = require('path');
 const fs = require('fs');
 
-// הגדרת formidable לטפל בקבצים זמניים בתיקיית /tmp
 const form = new formidable.IncomingForm({
     multiples: false,
     uploadDir: '/tmp',
@@ -67,14 +66,22 @@ module.exports = async (request, response) => {
             });
         }
         
+        // סימולציה של יצירת סרטון והחזרת קישור
+        const videoUrl = `https://example.com/videos/video-${Date.now()}.mp4`;
+
+        // שמירת פרטי הסרטון בטבלה החדשה
+        await sql`
+            INSERT INTO videos (user_email, video_description, video_url)
+            VALUES (${email}, ${videoDescription}, ${videoUrl});
+        `;
+
+        // עדכון מונה הסרטונים בטבלת המשתמשים
         await sql`
             UPDATE users SET
             videos_created_today = videos_created_today + 1,
             videos_created_this_month = videos_created_this_month + 1
             WHERE email = ${email};
         `;
-
-        const videoUrl = `https://example.com/videos/video-${Date.now()}.mp4`;
 
         response.status(200).json({
             message: 'הסרטון נוצר בהצלחה!',
