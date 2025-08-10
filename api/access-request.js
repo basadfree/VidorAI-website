@@ -37,8 +37,8 @@ module.exports = async (request, response) => {
 
             // הוספת המשתמש החדש לטבלה
             await sql`
-                INSERT INTO users (name, email, password)
-                VALUES (${fullName}, ${email});
+    INSERT INTO users (name, email, password)
+    VALUES (${fullName}, ${email}, ${password});
             `;
             
             // לשם בדיקה בלבד, נרשום את הסיסמה ביומנים
