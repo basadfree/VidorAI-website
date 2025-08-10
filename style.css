@@ -13,11 +13,11 @@ body {
 
 /* שורה עליונה (Banner) - עיצוב מדהים וקומפקטי */
 .banner {
-    background-color: #5b21b6; /* צבע סגול כהה */
+    background-color: #5b21b6;
     background-image: linear-gradient(90deg, #5b21b6, #8b5cf6);
     color: white;
     text-align: center;
-    padding: 8px; /* קטן יותר בגובה */
+    padding: 8px;
     font-size: 1.1em;
     position: fixed;
     top: 0;
@@ -45,7 +45,6 @@ h1, h2 {
     color: #1e1e1e;
     font-weight: 800;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-    animation: fadeIn 1s ease-in-out;
 }
 
 h2 {
@@ -247,7 +246,7 @@ section.visible {
     border-right: 3px solid #5b21b6;
 }
 
-/* עיצוב עמוד בקשת הגישה */
+/* עיצוב כללי של עמוד בקשת הגישה */
 .page-header {
     text-align: center;
     padding: 100px 5%;
@@ -259,10 +258,16 @@ section.visible {
     background-color: white;
     text-align: center;
 }
+
 .access-form {
     max-width: 500px;
     margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
+
 .access-form input {
     width: 100%;
     padding: 12px;
@@ -270,6 +275,7 @@ section.visible {
     border: 1px solid #ccc;
     border-radius: 5px;
 }
+
 .submit-button {
     width: 100%;
     padding: 15px;
@@ -281,10 +287,10 @@ section.visible {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 .submit-button:hover {
     background-color: #4cae4c;
 }
-
 
 /* פוטר */
 footer {
