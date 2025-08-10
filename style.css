@@ -25,6 +25,31 @@ body {
     z-index: 1000;
     transition: transform 0.4s ease-in-out;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative; /* שינוי כדי לאפשר מיקום יחסי */
+}
+
+/* כפתור התחברות - עיצוב חדש */
+.login-button {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    padding: 6px 12px;
+    border-radius: 25px;
+    text-decoration: none;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: white;
+    color: #5b21b6;
 }
 
 /* כפתור נגישות */
