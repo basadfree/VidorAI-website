@@ -155,7 +155,7 @@ if (currentPath.includes('dashboard.html')) {
             // קריאה ל-API לבדיקת אימות
             const response = await fetch('/api/check-auth', {
                 method: 'GET',
-                credentials: 'omit', // שינוי זה מוודא שהדפדפן שולח את העוגיות
+                credentials: 'include', // שינוי זה מוודא שהדפדפן שולח את העוגיות
             });
             
             if (response.status === 401) {
