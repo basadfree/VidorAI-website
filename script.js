@@ -98,12 +98,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// פונקציונליות חדשה לשליחת טופס ההתחברות
+// פונקציונליות לשליחת טופס ההתחברות
 const loginForm = document.getElementById('loginForm');
 if (loginForm) {
     loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
 
+        const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const statusMessage = document.getElementById('statusMessage');
 
@@ -113,7 +114,7 @@ if (loginForm) {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ password }),
+                body: JSON.stringify({ email, password }),
             });
 
             const result = await response.json();
@@ -127,8 +128,8 @@ if (loginForm) {
                 // ננתב את המשתמש לפאנל המשתמש
                 window.location.href = 'dashboard.html';
             } else {
-                // סיסמה שגויה
-                statusMessage.textContent = result.message || 'שגיאה: סיסמה לא נכונה.';
+                // פרטים שגויים
+                statusMessage.textContent = result.message || 'שגיאה: אימייל או סיסמה לא נכונים.';
                 statusMessage.style.color = '#721c24';
                 statusMessage.style.backgroundColor = '#f8d7da';
                 statusMessage.style.padding = '10px';
