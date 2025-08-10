@@ -1,0 +1,278 @@
+/* הגדרות בסיסיות לכל האתר */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f2f5;
+    color: #1a1a1a;
+    direction: rtl;
+    text-align: right;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* שורה עליונה (Banner) - עיצוב מדהים וקומפקטי */
+.banner {
+    background-color: #5b21b6; /* צבע סגול כהה */
+    background-image: linear-gradient(90deg, #5b21b6, #8b5cf6);
+    color: white;
+    text-align: center;
+    padding: 8px; /* קטן יותר בגובה */
+    font-size: 1.1em;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: transform 0.4s ease-in-out;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* כותרות - עיצוב מדהים ודרמטי */
+h1, h2 {
+    color: #1e1e1e;
+    font-weight: 800;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    animation: fadeIn 1s ease-in-out;
+}
+
+h2 {
+    font-size: 3em;
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 50%;
+    transform: translateX(50%);
+    width: 80px;
+    height: 4px;
+    background-color: #5b21b6;
+    border-radius: 2px;
+}
+
+/* עיצוב כללי של קטעים - אפקט טעינה */
+section {
+    padding: 80px 5%;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+section.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Hero Section */
+.hero-section {
+    text-align: center;
+    padding-top: 200px;
+    padding-bottom: 100px;
+    background: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+}
+
+.hero-section h1 {
+    font-size: 4em;
+    margin-bottom: 0.5em;
+    color: #2c0b5c;
+    letter-spacing: -1px;
+}
+
+.hero-section .subtitle {
+    font-size: 1.5em;
+    color: #4b5563;
+    max-width: 700px;
+    margin: 0 auto 30px auto;
+}
+
+.cta-button {
+    display: inline-block;
+    background-image: linear-gradient(to right, #5b21b6, #8b5cf6);
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none;
+    border-radius: 50px;
+    font-size: 1.2em;
+    font-weight: 600;
+    transition: background-image 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(91, 33, 182, 0.3);
+}
+
+.cta-button:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(91, 33, 182, 0.4);
+}
+
+/* קטע איך זה עובד? - עיצוב מדהים ואפקטים */
+.how-it-works-section {
+    background-color: white;
+    text-align: center;
+}
+.step-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+.step {
+    max-width: 300px;
+    text-align: center;
+    padding: 30px;
+    background-color: #f9fafb;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.step:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+.step-number {
+    font-size: 2.5em;
+    font-weight: 700;
+    color: #5b21b6;
+    background-color: #e2d7f9;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+}
+.step:hover .step-number {
+    transform: scale(1.1);
+    background-image: linear-gradient(45deg, #5b21b6, #8b5cf6);
+    color: white;
+}
+
+/* Feature Section */
+.features-section {
+    background-color: #f9fafb;
+    text-align: center;
+    padding-bottom: 100px;
+}
+
+.feature-item {
+    display: inline-block;
+    width: 40%;
+    margin: 1% 4%;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    background-color: white;
+    transition: transform 0.3s ease;
+}
+
+.feature-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+}
+
+.feature-item img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+}
+
+/* גלריית דוגמאות */
+.examples-section {
+    text-align: center;
+    background-color: #e2e8f0;
+}
+.example-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+.example-video-placeholder {
+    width: 300px;
+    height: 180px;
+    background-color: #ccc;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+.example-video-placeholder:hover {
+    transform: scale(1.05);
+}
+
+/* שאלות נפוצות */
+.faq-section {
+    background-color: white;
+}
+.faq-container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+.faq-item {
+    border-bottom: 1px solid #e2e2e2;
+    padding: 20px 0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.faq-item:hover {
+    background-color: #f9f9f9;
+}
+.faq-item h3 {
+    margin: 0;
+    font-size: 1.2em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.faq-item .answer {
+    display: none;
+    margin-top: 10px;
+    padding-right: 15px;
+    border-right: 3px solid #5b21b6;
+}
+
+/* טופס בקשת הרשאה */
+.request-access-section {
+    background-color: #e2e8f0;
+    text-align: center;
+}
+
+.access-form {
+    max-width: 500px;
+    margin: 20px auto;
+}
+
+.access-form input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.submit-button {
+    width: 100%;
+    padding: 15px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #4cae4c;
+}
+
+/* פוטר */
+footer {
+    text-align: center;
+    padding: 30px;
+    background-color: #1e1e1e;
+    color: white;
+}
