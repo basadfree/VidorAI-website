@@ -183,71 +183,6 @@ if (logoutButton) {
     });
 }
 
-// פונקציונליות ליצירת סרטון
-const createVideoForm = document.getElementById('createVideoForm');
-if (createVideoForm) {
-    createVideoForm.addEventListener('submit', async (event) => {
-        event.preventDefault();
-
-        const videoText = document.getElementById('videoText').value;
-        const videoImage = document.getElementById('videoImage').files[0];
-        const videoDescription = document.getElementById('videoDescription').value;
-        const musicSelect = document.getElementById('musicSelect').value;
-        const designSelect = document.getElementById('designSelect').value;
-
-        const statusMessage = document.getElementById('videoStatusMessage');
-        const videosList = document.getElementById('videosList');
-
-        statusMessage.textContent = 'יוצר סרטון... זה עשוי לקחת מספר דקות.';
-        statusMessage.style.color = '#31708f';
-        statusMessage.style.backgroundColor = '#d9edf7';
-        statusMessage.style.padding = '10px';
-
-        // שימוש ב-FormData כדי לשלוח טקסט וגם קובץ תמונה
-        const formData = new FormData();
-        formData.append('videoText', videoText);
-        if (videoImage) {
-            formData.append('videoImage', videoImage);
-        }
-        formData.append('videoDescription', videoDescription);
-        formData.append('musicSelect', musicSelect);
-        formData.append('designSelect', designSelect);
-
-        try {
-            const response = await fetch('/api/create-video', {
-                method: 'POST',
-                body: formData,
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                statusMessage.textContent = 'הסרטון נוצר בהצלחה!';
-                statusMessage.style.color = '#155724';
-                statusMessage.style.backgroundColor = '#d4edda';
-
-                const newVideoElement = document.createElement('div');
-                newVideoElement.innerHTML = `
-                    <h3>${result.videoDescription}</h3>
-                    <p>קובץ הסרטון: <a href="${result.videoUrl}" target="_blank">לחץ לצפייה</a></p>
-                `;
-                videosList.appendChild(newVideoElement);
-
-            } else {
-                statusMessage.textContent = result.message || 'שגיאה ביצירת הסרטון.';
-                statusMessage.style.color = '#721c24';
-                statusMessage.style.backgroundColor = '#f8d7da';
-            }
-
-        } catch (error) {
-            console.error('שגיאה ביצירת הסרטון:', error);
-            statusMessage.textContent = 'שגיאה בחיבור לשרת. נסו שוב מאוחר יותר.';
-            statusMessage.style.color = '#721c24';
-            statusMessage.style.backgroundColor = '#f8d7da';
-        }
-    });
-}
-
 // פונקציה לשליפת והצגת היסטוריית הסרטונים
 async function fetchVideos() {
     const videosList = document.getElementById('videosList');
@@ -293,3 +228,73 @@ async function fetchVideos() {
 
 // קורא לפונקציה בעת טעינת הדף כדי להציג את ההיסטוריה
 document.addEventListener('DOMContentLoaded', fetchVideos);
+
+// פונקציה לבדיקת סטטוס העבודה ב-Runpod
+async function checkJobStatus(jobId) {
+    try {
+        const response = await fetch(`/api/get-job-status?jobId=${jobId}`);
+        const result = await response.json();
+        
+        if (response.ok) {
+            // אם המודל מחזיר "COMPLETED", ניקח את הקישור לסרטון ונציג אותו
+            if (result.status === 'COMPLETED') {
+                const videoUrl = result.result.video_url; // תלוי במבנה המידע שהמודל מחזיר
+                // כעת, ניתן להציג את הקישור לסרטון שהתקבל בפאנל המשתמש
+                alert(`הסרטון נוצר בהצלחה! ניתן לצפות בו בקישור: ${videoUrl}`);
+                // ריענון היסטוריית הסרטונים
+                fetchVideos();
+            } else if (result.status === 'FAILED') {
+                alert('יצירת הסרטון נכשלה.');
+            } else {
+                // אם הסטטוס עדיין לא "COMPLETED", נמשיך לבדוק
+                setTimeout(() => checkJobStatus(jobId), 5000); // בדיקה כל 5 שניות
+            }
+        } else {
+            alert(`שגיאה בבדיקת סטטוס העבודה: ${result.message}`);
+        }
+    } catch (error) {
+        console.error('שגיאה בבדיקת סטטוס העבודה:', error);
+        alert('שגיאה בחיבור לשרת. נסו שוב מאוחר יותר.');
+    }
+}
+
+// פונקציה לעיבוד טופס יצירת הסרטון
+const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const form = event.target;
+    const formData = new FormData(form);
+
+    const messageDiv = document.getElementById('messageDiv');
+    messageDiv.textContent = "יוצר סרטון... זה עשוי לקחת מספר דקות.";
+    messageDiv.classList.remove('success', 'error');
+    messageDiv.classList.add('loading');
+
+    try {
+        const response = await fetch('/api/create-video', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            messageDiv.textContent = "הבקשה נשלחה בהצלחה ל-AI! ממתין לסרטון...";
+            // התחלת בדיקת הסטטוס של העבודה שהתקבלה
+            checkJobStatus(result.jobId);
+        } else {
+            messageDiv.textContent = `שגיאה: ${result.message}`;
+            messageDiv.classList.remove('loading');
+            messageDiv.classList.add('error');
+        }
+    } catch (error) {
+        messageDiv.textContent = 'שגיאה בחיבור לשרת. נסו שוב מאוחר יותר.';
+        messageDiv.classList.remove('loading');
+        messageDiv.classList.add('error');
+    }
+};
+
+const createVideoForm = document.getElementById('createVideoForm');
+if (createVideoForm) {
+    createVideoForm.addEventListener('submit', handleSubmit);
+}
