@@ -53,27 +53,34 @@ module.exports = async (request, response) => {
         if (user.videos_created_this_month >= user.monthly_limit) {
             return response.status(403).json({ message: 'הגעת למגבלה החודשית ליצירת סרטונים.' });
         }
+        
+        // ** שלב חדש: שליחת הנתונים ל-API של Runpod **
+        const runpodResponse = await fetch(process.env.RUNPOD_ENDPOINT, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${process.env.RUNPOD_API_KEY}`
+            },
+            body: JSON.stringify({
+                // הנתונים שתשלח למודל ה-AI
+                input: {
+                    text_input: videoText,
+                    description: videoDescription,
+                    music_style: musicSelect,
+                    design_template: designSelect,
+                    // הערה: שליחת קבצים היא מורכבת יותר, נתייחס לזה בהמשך.
+                    // בשלב זה, נשלח רק את שם הקובץ או קישור לקובץ אם הוא כבר מאוחסן בענן.
+                }
+            })
+        });
 
-        console.log(`יצירת סרטון עבור: ${email}`);
-        console.log(`טקסט: ${videoText}`);
-        console.log(`תיאור: ${videoDescription}`);
-        console.log(`מוזיקה: ${musicSelect}`);
-        console.log(`עיצוב: ${designSelect}`);
-        if (videoImage) {
-            console.log(`קובץ תמונה שהועלה: ${videoImage.filepath}`);
-            fs.unlink(videoImage.filepath, err => {
-                if (err) console.error('שגיאה במחיקת קובץ זמני:', err);
-            });
+        if (!runpodResponse.ok) {
+            const errorText = await runpodResponse.text();
+            throw new Error(`שגיאה ב-Runpod API: ${errorText}`);
         }
         
-        // סימולציה של יצירת סרטון והחזרת קישור
-        const videoUrl = `https://example.com/videos/video-${Date.now()}.mp4`;
-
-        // שמירת פרטי הסרטון בטבלה החדשה
-        await sql`
-            INSERT INTO videos (user_email, video_description, video_url)
-            VALUES (${email}, ${videoDescription}, ${videoUrl});
-        `;
+        const runpodResult = await runpodResponse.json();
+        const videoJobId = runpodResult.id; // או שם המזהה שהמודל מחזיר
 
         // עדכון מונה הסרטונים בטבלת המשתמשים
         await sql`
@@ -84,13 +91,18 @@ module.exports = async (request, response) => {
         `;
 
         response.status(200).json({
-            message: 'הסרטון נוצר בהצלחה!',
-            videoDescription: videoDescription,
-            videoUrl: videoUrl
+            message: 'הבקשה ליצירת סרטון נשלחה ל-AI. אנא המתן.',
+            jobId: videoJobId
         });
 
     } catch (error) {
         console.error('שגיאה ב-create-video API:', error);
         response.status(500).json({ message: 'אירעה שגיאה בשרת. נסו שוב מאוחר יותר.' });
+    } finally {
+        if (files && files.videoImage && files.videoImage[0]) {
+            fs.unlink(files.videoImage[0].filepath, err => {
+                if (err) console.error('שגיאה במחיקת קובץ זמני:', err);
+            });
+        }
     }
 };
