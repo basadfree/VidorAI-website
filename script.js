@@ -236,25 +236,30 @@ async function checkJobStatus(jobId) {
         const result = await response.json();
         
         if (response.ok) {
-            // אם המודל מחזיר "COMPLETED", ניקח את הקישור לסרטון ונציג אותו
             if (result.status === 'COMPLETED') {
-                const videoUrl = result.result.video_url; // תלוי במבנה המידע שהמודל מחזיר
-                // כעת, ניתן להציג את הקישור לסרטון שהתקבל בפאנל המשתמש
-                alert(`הסרטון נוצר בהצלחה! ניתן לצפות בו בקישור: ${videoUrl}`);
-                // ריענון היסטוריית הסרטונים
-                fetchVideos();
+                const videoUrl = result.result.video_url || '#';
+                
+                // שלב חדש: שמירת הקישור לסרטון בבסיס הנתונים
+                await fetch('/api/save-video-link', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ jobId, videoUrl })
+                });
+
+                updateStatus('הסרטון נוצר בהצלחה! מרענן את הרשימה...', false);
+                await fetchVideos(); 
             } else if (result.status === 'FAILED') {
-                alert('יצירת הסרטון נכשלה.');
+                updateStatus('יצירת הסרטון נכשלה.', false);
             } else {
-                // אם הסטטוס עדיין לא "COMPLETED", נמשיך לבדוק
-                setTimeout(() => checkJobStatus(jobId), 5000); // בדיקה כל 5 שניות
+                updateStatus(`סטטוס נוכחי: ${result.status}. ממתין לסרטון...`);
+                setTimeout(() => checkJobStatus(jobId), 5000); 
             }
         } else {
-            alert(`שגיאה בבדיקת סטטוס העבודה: ${result.message}`);
+            updateStatus(`שגיאה בבדיקת סטטוס העבודה: ${result.message}`, false);
         }
     } catch (error) {
         console.error('שגיאה בבדיקת סטטוס העבודה:', error);
-        alert('שגיאה בחיבור לשרת. נסו שוב מאוחר יותר.');
+        updateStatus('שגיאה בחיבור לשרת. נסו שוב מאוחר יותר.', false);
     }
 }
 
