@@ -258,6 +258,50 @@ async function checkJobStatus(jobId) {
     }
 }
 
+// פונקציה לעדכון מצב הממשק (הודעות טקסט וספינר)
+function updateStatus(message, isLoading = true) {
+    const statusContainer = document.getElementById('statusContainer');
+    const statusText = document.getElementById('statusText');
+    const loadingSpinner = statusContainer.querySelector('.loading-spinner');
+    
+    if (isLoading) {
+        statusContainer.style.display = 'block';
+        loadingSpinner.style.display = 'block';
+        statusText.textContent = message;
+    } else {
+        loadingSpinner.style.display = 'none';
+        statusText.textContent = message;
+    }
+}
+
+// פונקציה לבדיקת סטטוס העבודה ב-Runpod
+async function checkJobStatus(jobId) {
+    try {
+        const response = await fetch(`/api/get-job-status?jobId=${jobId}`);
+        const result = await response.json();
+        
+        if (response.ok) {
+            if (result.status === 'COMPLETED') {
+                const videoUrl = result.result.video_url || '#'; // מקבלים את הקישור או משתמשים ב-#
+                updateStatus('הסרטון נוצר בהצלחה!', false);
+                
+                // כעת, ניתן להוסיף את הסרטון החדש להיסטוריה
+                await fetchVideos();
+            } else if (result.status === 'FAILED') {
+                updateStatus('יצירת הסרטון נכשלה.', false);
+            } else {
+                updateStatus(`סטטוס נוכחי: ${result.status}. ממתין לסרטון...`);
+                setTimeout(() => checkJobStatus(jobId), 5000);
+            }
+        } else {
+            updateStatus(`שגיאה בבדיקת סטטוס העבודה: ${result.message}`, false);
+        }
+    } catch (error) {
+        console.error('שגיאה בבדיקת סטטוס העבודה:', error);
+        updateStatus('שגיאה בחיבור לשרת. נסו שוב מאוחר יותר.', false);
+    }
+}
+
 // פונקציה לעיבוד טופס יצירת הסרטון
 const handleSubmit = async (event) => {
     event.preventDefault();
@@ -265,10 +309,7 @@ const handleSubmit = async (event) => {
     const form = event.target;
     const formData = new FormData(form);
 
-    const messageDiv = document.getElementById('messageDiv');
-    messageDiv.textContent = "יוצר סרטון... זה עשוי לקחת מספר דקות.";
-    messageDiv.classList.remove('success', 'error');
-    messageDiv.classList.add('loading');
+    updateStatus("שולח את הבקשה לשרת...", true);
 
     try {
         const response = await fetch('/api/create-video', {
@@ -279,18 +320,13 @@ const handleSubmit = async (event) => {
         const result = await response.json();
 
         if (response.ok) {
-            messageDiv.textContent = "הבקשה נשלחה בהצלחה ל-AI! ממתין לסרטון...";
-            // התחלת בדיקת הסטטוס של העבודה שהתקבלה
+            updateStatus("הבקשה נשלחה בהצלחה ל-AI! ממתין לסרטון...");
             checkJobStatus(result.jobId);
         } else {
-            messageDiv.textContent = `שגיאה: ${result.message}`;
-            messageDiv.classList.remove('loading');
-            messageDiv.classList.add('error');
+            updateStatus(`שגיאה: ${result.message}`, false);
         }
     } catch (error) {
-        messageDiv.textContent = 'שגיאה בחיבור לשרת. נסו שוב מאוחר יותר.';
-        messageDiv.classList.remove('loading');
-        messageDiv.classList.add('error');
+        updateStatus('שגיאה בחיבור לשרת. נסו שוב מאוחר יותר.', false);
     }
 };
 
@@ -298,3 +334,49 @@ const createVideoForm = document.getElementById('createVideoForm');
 if (createVideoForm) {
     createVideoForm.addEventListener('submit', handleSubmit);
 }
+
+// פונקציה לשליפת והצגת היסטוריית הסרטונים (בלי שינוי)
+async function fetchVideos() {
+    const videosList = document.getElementById('videosList');
+    if (!videosList) return;
+    
+    videosList.innerHTML = '<p>טוען היסטוריית סרטונים...</p>';
+
+    try {
+        const response = await fetch('/api/get-videos', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            videosList.innerHTML = '';
+            if (result.videos.length > 0) {
+                result.videos.forEach(video => {
+                    const newVideoElement = document.createElement('div');
+                    newVideoElement.classList.add('video-item');
+                    newVideoElement.innerHTML = `
+                        <h3>${video.video_description}</h3>
+                        <p>נוצר בתאריך: ${new Date(video.created_at).toLocaleDateString()}</p>
+                        <a href="${video.video_url}" target="_blank" class="video-link">צפה בסרטון</a>
+                    `;
+                    videosList.appendChild(newVideoElement);
+                });
+            } else {
+                videosList.innerHTML = '<p>אין סרטונים עדיין.</p>';
+            }
+        } else {
+            videosList.innerHTML = `<p style="color:red;">שגיאה בטעינת הסרטונים: ${result.message}</p>`;
+        }
+
+    } catch (error) {
+        console.error('שגיאה בטעינת הסרטונים:', error);
+        videosList.innerHTML = '<p style="color:red;">שגיאה בחיבור לשרת. נסו שוב מאוחר יותר.</p>';
+    }
+}
+
+// קורא לפונקציה בעת טעינת הדף כדי להציג את ההיסטוריה
+document.addEventListener('DOMContentLoaded', fetchVideos);

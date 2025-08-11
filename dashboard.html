@@ -18,30 +18,34 @@
     <main class="dashboard-content">
         <h2>יצירת סרטון חדש</h2>
         <form id="createVideoForm" class="access-form">
-            <textarea id="videoText" placeholder="כתוב כאן את הטקסט לסרטון..." required></textarea>
-            <input type="file" id="videoImage" accept="image/*">
-            <input type="text" id="videoDescription" placeholder="תיאור קצר לסרטון" required>
+            <textarea name="videoText" placeholder="כתוב כאן את הטקסט לסרטון..." required></textarea>
+            <input type="file" name="videoImage" accept="image/*">
+            <input type="text" name="videoDescription" placeholder="תיאור קצר לסרטון" required>
             
             <label for="musicSelect">בחר מוזיקה:</label>
-            <select id="musicSelect">
+            <select name="musicSelect">
                 <option value="none">ללא מוזיקה</option>
                 <option value="upbeat">קצבי</option>
                 <option value="calm">רגוע</option>
             </select>
 
             <label for="designSelect">בחר עיצוב:</label>
-            <select id="designSelect">
+            <select name="designSelect">
                 <option value="simple">פשוט</option>
                 <option value="professional">מקצועי</option>
             </select>
             
             <button type="submit" class="submit-button">צור סרטון</button>
+
+            <div id="statusContainer" class="message-container" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p id="statusText" class="status-text"></p>
+            </div>
         </form>
-        <div id="videoStatusMessage"></div>
         
         <h2>הסרטונים שנוצרו</h2>
         <div id="videosList">
-            <p>אין סרטונים עדיין.</p>
+            <p>טוען סרטונים...</p>
         </div>
     </main>
 
